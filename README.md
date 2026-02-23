@@ -1,18 +1,35 @@
-## Sudoku-Creater-Solver
+# Sudoku Creator Solver
 
-### About
-This project was created in an attempt to better understand Sudoku and learn strategies for solving NP-Hard problems. It is a simple Sudoku game; one that is playable, can load and save game states, can generate boards, and lastly can also solve them.
+## About
+This project was created during my undergrad to better understand Sudoku and strategies for solving NP-hard problems. It is a simple Sudoku app that lets you:
 
-The program is able to solve sudoku problems extremely quickly, solving a board in under 0.01 seconds on average, with 99% of boards tested being solved in under 0.1 seconds.
+- play puzzles in a GUI
+- load and save game states
+- generate random boards
+- solve boards automatically
 
-Generating a board depends on the number of empty squares requested. With less than 40 empty squares, the script generates a board in about 0.1 seconds, but once we reach 55 empty squares, it takes ~2 seconds per generated board.
+## Algorithms Used
+The solver is based on two ideas:
 
-### Algorithms Used
-Two main principles were used to solve a puzzle: 1. Searching and 2. Constraint propagation. To put it simply, we do a depth-first-search on the board, taking the square with the fewest possibilities left and randomly picking a value to insert there. We then eliminate this value from all the squares that can no longer contain this value. We continue to do this until there is a contradiction (or we are unable to add anymore values to the board), and thus at some point we went wrong. We cancel out of this branch, and continue on with another, every time eliminating an extremely large number of possibilities compared to a brute force search. We do this until we solve the board, and thus we can return it.
+1. Searching (depth-first search)
+2. Constraint propagation
 
-To create a board, we employ the solve_board function described above, however a little bit differently. We randomly create a solved board by picking a random square and then a random value and running our solve board function. This creates 81^9 different possible boards to begin with. We then randomly pick a square, remove it, and try all other number in that square and run our solve_board funciton. If it results in a solved board, we put the original number back, and try again with a different square. This is done inorder to ensure every board presented has only one solution.
+At each step, it selects the square with the fewest remaining possibilities, tries a value, and propagates constraints by removing that value from peer squares. If this leads to a contradiction, it backtracks and explores another branch. This cuts down the search space significantly compared to brute force.
 
-### Main Code
-To run the code, simply run *python sudoku.py*. I have provided 50 pre-made boards for you to load if you wish. 
+Board generation reuses the solver:
 
-Have fun!
+1. Seed the grid with a random value in a random square.
+2. Solve to produce a complete valid board.
+3. Remove values one by one and test alternatives.
+4. Keep a cell removed only when uniqueness is preserved.
+
+This is how the generator aims to produce puzzles with a single solution.
+
+## Running the Code
+Run:
+
+```bash
+python sudoku.py
+```
+
+The repository also includes 50 pre-made boards in `50 Random Problems/`.
